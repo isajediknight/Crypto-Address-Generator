@@ -74,7 +74,12 @@ from bitcoinaddress import Wallet
 
 # < ---  End  pypi.org Module Import -- >
 
+
+runtime = Benchmark()
 wallet = Wallet()
 print(wallet)
 #print(wallet.key.__dict__['mainnet'].__dict__)
+runtime.stop()
+#print("Program Runtime: "+runtime.seconds_to_human_readable(runtime.get_seconds()))
+print("Program Runtime: " +runtime.human_readable_string())
 

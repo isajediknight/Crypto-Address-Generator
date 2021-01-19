@@ -38,7 +38,7 @@ class Benchmark:
         # Tracks if we are running or not
         self.boolean_running = True
 
-    def reset_start(self):
+    def reset(self):
         """
         Resets all the counters
         """
@@ -76,13 +76,6 @@ class Benchmark:
         self.counter_reset += 1
 
         self.boolean_running = True
-
-    # Are these needed?
-    #def start(self):
-    #    self.begin_time = datetime.datetime.now()
-    #
-    #def begin(self):
-    #    self.begin_time = datetime.datetime.now()
 
     def stop(self):
         """

@@ -109,15 +109,15 @@ while(counter < addresses_to_generate):
     private_key, public_address_1, public_address_3 = wallet._get_the_three()
     details = public_address_1 + ',' + public_address_3 + ',' + private_key + '\n'
 
-    if((details.lower().find('trump') > 0) or (details.lower().find('biden') > 0) or (details.lower().find('harris') > 0) or (details.lower().find('america') > 0)):
-        print("Political: " + details)
+    #if((details.lower().find('trump') > 0) or (details.lower().find('biden') > 0) or (details.lower().find('harris') > 0) or (details.lower().find('america') > 0)):
+    #    print("Political: " + details)
 
-    if ((details.lower().find('blacklivesmater') > 0) or (details.lower().find('systematicracism') > 0)):
-        print("Liberal: " + details)
+    #if ((details.lower().find('blacklivesmater') > 0) or (details.lower().find('systematicracism') > 0)):
+    #    print("Liberal: " + details)
 
-    if ((details.lower().find('facebook') > 0) or (details.lower().find('google') > 0) or (
-            details.lower().find('twitter') > 0) or (details.lower().find('microsoft') > 0)):
-        print("Corporate: " + details)
+    #if ((details.lower().find('facebook') > 0) or (details.lower().find('google') > 0) or (
+    #        details.lower().find('twitter') > 0) or (details.lower().find('microsoft') > 0)):
+    #    print("Corporate: " + details)
 
     path_plus_file = '/media/luke/Data/Crypto/BTC/generated_addresses/' + public_address_1[0:2].upper() + '_' + public_address_3[0:2].upper() + '_generated_addresses.txt'
 

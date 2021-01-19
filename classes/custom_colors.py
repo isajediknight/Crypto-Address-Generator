@@ -3,6 +3,8 @@ import datetime,time,os,sys,unittest
 
 if(sys.platform.lower().startswith('linux')):
     OS_TYPE = 'linux'
+elif (sys.platform.lower().startswith('darwin')):
+    OS_TYPE = 'macintosh'
 elif(sys.platform.lower().startswith('mac')):
     OS_TYPE = 'macintosh'
 elif(sys.platform.lower().startswith('win')):
@@ -51,7 +53,7 @@ elif((OS_TYPE == 'linux') or (OS_TYPE == 'macintosh')):
     CLASS_FILES_DIR = OUTPUT_FILE_DIRECTORY[:directories[-1]] + '/classes/'
 
 # OS Compatibility for importing Class Files
-if((OS_TYPE == 'linux')):
+if((OS_TYPE == 'linux') or (OS_TYPE == 'macintosh')):
     sys.path.insert(0,'../classes/')
     sys.path.insert(1,MODULES_DIR)
 elif((OS_TYPE == 'windows')):
@@ -134,6 +136,10 @@ class ColoredText:
         Gonna be typing that alot so make it small!
         """
 
+        # I've not investigated text colorization on Windows
+        if(OS_TYPE == 'windows'):
+            return text
+
         # Set to True if any errors are detected
         any_errors = False
         error_message = ''
@@ -179,8 +185,39 @@ class ColoredText:
         else:
             return ans
 
+    def print_color_range(self):
+        for code in range(30, 38):
+            print('\x1b[' + str(code) + 'm' + str(code) + 'm' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';1m' + str(code) + ';1m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';2m' + str(code) + ';2m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';3m' + str(code) + ';3m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';4m' + str(code) + ';4m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';5m' + str(code) + ';5m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';6m' + str(code) + ';6m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';7m' + str(code) + ';7m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code) + ';9m' + str(code) + ';9m' + '\x1b[0m', end="\t")
+            print('\x1b[' + str(code + 60) + 'm' + str(code + 60) + 'm' + '\x1b[0m', end="\t")
 
-
+    def print_styling(self):
+        # Single color with effects on the text
+        print('\x1b' + '[38;5;36m' + 'normal' + '\x1b[0m')
+        print('\x1b' + '[1;38;5;36m' + 'bold' + '\x1b[0m')
+        print('\x1b' + '[2;38;5;36m' + 'disabled' + '\x1b[0m')
+        print('\x1b' + '[3;38;5;36m' + 'italic' + '\x1b[0m')
+        print('\x1b' + '[4;38;5;36m' + 'underlined' + '\x1b[0m')
+        print('\x1b' + '[7;38;5;36m' + 'reverse' + '\x1b[0m')
+        print('\x1b' + '[9;38;5;36m' + 'strike through' + '\x1b[0m')
+        print('\x1b' + '[8;38;5;36m' + 'invisible' + '\x1b[0m')
+    def rename(self):
+        # background, foreground, text, text styling
+        for style in range(8):
+            for fg in range(30,38):
+                s1 = ''
+                for bg in range(40,48):
+                    format = ';'.join([str(style), str(fg), str(bg)])
+                    s1 += '\x1b[%sm %s \x1b[0m' % (format, format)
+                print(s1)
+            print('\n')
 
 
 

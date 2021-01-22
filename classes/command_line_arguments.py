@@ -70,11 +70,29 @@ class Parse:
 
         # How do we identify the parameters being passed in?
         self.parameter_flags = []
-        for item in paramter_flags:
-            self.parameter_flags.append(item)
+
+        # For text coloration
+        text = ColoredText(['datatype'], ['38;5;30m'])
+
+        if type([]) == type(paramter_flags):
+            for item in paramter_flags:
+                self.parameter_flags.append(item)
+        elif type('') == type(paramter_flags):
+            self.parameter_flags.append(paramter_flags)
+        else:
+            print(" [ "+text.cc('paramter_flags','purple') + " Datatype " + str(text.cc(str(type(paramter_flags)),'datatype')) + " is " + text.cc('not supported','red') + " ]")
+            print("   Expected: " + text.cc('String','datatype') + " or " + text.cc('List','datatype'))# + " but got " + text.cc(str(type(paramter_flags)),'datatype'))
 
         # Dictionary for holding all the Paramters and their Values
         self.parameters = {}
+
+    def add_paramter_flags(self,paramter_flags='-'):
+        """
+        <paramter_flags>
+        What string should be used to identify a parameter
+        '-'
+        """
+
 
     def add_parameter(self,parameter_name,parameter_type,required,hidden):
         """

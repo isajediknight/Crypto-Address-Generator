@@ -66,7 +66,7 @@ from custom_colors import *
 
 class Parse:
 
-    def __init__(self,paramter_flags=['-','--']):
+    def __init__(self,input_parameter=['-','--']):
 
         # How do we identify the parameters being passed in?
         self.parameter_flags = []
@@ -74,25 +74,42 @@ class Parse:
         # For text coloration
         text = ColoredText(['datatype'], ['38;5;30m'])
 
-        if type([]) == type(paramter_flags):
-            for item in paramter_flags:
+        # Was the Class Object initialized successfully
+        self.validation = False
+
+        if type([]) == type(input_parameter):
+            ##DEBUG
+            ##print("List " + str(input_parameter))
+            for item in input_parameter:
+                ##DEBUG
+                ##print("Added: " + item)
                 self.parameter_flags.append(item)
-        elif type('') == type(paramter_flags):
-            self.parameter_flags.append(paramter_flags)
+                self.validation = True
+        elif type('') == type(input_parameter):
+            ##DEBUG
+            ##print("String " + str(input_parameter))
+            if len(input_parameter) > 0:
+                self.parameter_flags.append(input_parameter)
+                ##DEBUG
+                ##print("Added: " + input_parameter)
+                self.validation = True
         else:
-            print(" [ "+text.cc('paramter_flags','purple') + " Datatype " + str(text.cc(str(type(paramter_flags)),'datatype')) + " is " + text.cc('not supported','red') + " ]")
-            print("   Expected: " + text.cc('String','datatype') + " or " + text.cc('List','datatype'))# + " but got " + text.cc(str(type(paramter_flags)),'datatype'))
+            pass
+            #message = " [ In " + text.cc('__init__','blue') + " " + text.cc('paramter_flags','purple') + " was passed " + str(text.cc(str(type(input_parameter)),'datatype'))
+            #message += " which is " + text.cc('not supported','red') + " ]"
+            #print(message)
+            #print("   " + text.cc('Expected: ','grey') + text.cc('String','datatype') + text.cc(' or ','grey') + text.cc('List','datatype'))# + " but got " + text.cc(str(type(paramter_flags)),'datatype'))
 
         # Dictionary for holding all the Paramters and their Values
         self.parameters = {}
 
-    def add_paramter_flags(self,paramter_flags='-'):
-        """
-        <paramter_flags>
-        What string should be used to identify a parameter
-        '-'
-        """
-
+    #def add_paramter_flags(self,paramter_flags='-'):
+    #    """
+    #    <paramter_flags>
+    #    What string should be used to identify a parameter
+    #    '-'
+    #    """
+    #    self.parameter_flags.append(paramter_flags)
 
     def add_parameter(self,parameter_name,parameter_type,required,hidden):
         """
@@ -125,8 +142,20 @@ class Parse:
             print(" Paramter Name: " + parameter_name + " is not a Parameter")
             return False
 
+    def parse(self):
+        """
+        Parse the commandline arguments!
+        """
+        self.script_file = sys.argv[0]
+
+        for item in sys.argv[1:]:
+            print(item)
+
     def get_parameter_names(self):
         return list(self.parameters.keys())
+
+    def get_class_validation(self):
+        return self.validation
 
 class Parameter:
 

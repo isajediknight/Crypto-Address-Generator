@@ -1,5 +1,5 @@
 # Default Modules
-import os,sys
+import os,sys,getpass
 
 if(sys.platform.lower().startswith('linux')):
     OS_TYPE = 'linux'
@@ -103,6 +103,9 @@ class Parse:
         # Dictionary for holding all the Paramters and their Values
         self.parameters = {}
 
+        # Expectations - what we are expecting to be passed in via commandline
+        self.expected_parameters = {}
+
     #def add_paramter_flags(self,paramter_flags='-'):
     #    """
     #    <paramter_flags>
@@ -142,14 +145,94 @@ class Parse:
             print(" Paramter Name: " + parameter_name + " is not a Parameter")
             return False
 
-    def parse(self):
+    def parse_commandline(self):
         """
         Parse the commandline arguments!
         """
         self.script_file = sys.argv[0]
 
+        previous_item = ''
         for item in sys.argv[1:]:
-            print(item)
+            for parameter_flag in self.parameter_flags:
+                if previous_item.find(parameter_flag) == 0:
+                    ##DEBUG
+                    ##print("Assigning: " + previous_item + " <-- " + item)
+                    self.parameters[previous_item] = Parameter(self.get_value_datatype(item),item,False,False)
+                    self.parameters[previous_item].show_parameter()
+            previous_item = item
+
+        #return self.parameters
+
+    def add_expectation(self,parameter_name = 'unnamed',datatype = 'string', required = False,hidden = False):
+        """
+        What do we expect will be added as commandline parameters?
+        """
+        self.expected_parameters[parameter_name] = Parameter(datatype, None, required, hidden)
+
+    def validate_requirements(self):
+        """
+
+        """
+        for key in list(self.expected_parameters.keys()):
+            if key not in list(self.parameters.keys()) and self.expected_parameters[key].get_required():
+                print("Missing: " + key)
+
+                if self.expected_parameters[key].get_hidden():
+                    value = getpass.getpass(key + ": ")
+                else:
+                    value = input(key + ": ")
+
+                while(self.expected_parameters[key].get_parameter_type() != self.get_value_datatype(value)):
+
+                    print(str(self.expected_parameters[key].get_parameter_type()) + " - " + self.get_value_datatype(value))
+
+                    if self.expected_parameters[key].get_hidden:
+                        value = getpass.getpass(key + ": ")
+                    else:
+                        value = input(key + ": ")
+
+
+
+    def get_value_datatype(self,value):
+        """
+        Used for identifying the datatype of the value passed in
+        """
+        try:
+            test = int(value)
+            return 'integer'
+        except:
+            pass
+
+        try:
+            test = float(value)
+            return 'float'
+        except:
+            pass
+
+        if type(value) == type([]):
+            return 'list'
+        elif type(value) == type({}):
+            return 'dictionary'
+        elif type(value) == type(complex(1j)):
+            return 'complaex'
+        elif type(value) == type(tuple(("apple", "orange"))):
+            return 'tuple'
+        elif type(value) == type(range(1)):
+            return 'range'
+        elif type(value) == type(set([1,2,3])):
+            return 'set'
+        elif type(value) == type(frozenset(("apple", "orange"))):
+            return 'frozenset'
+        elif type(value) == type(False):
+            return 'boolean'
+        elif type(value) == type(bytes(5)):
+            return 'bytes'
+        elif type(value) == bytearray(5):
+            return 'bytearray'
+        elif type(value) == memoryview(bytes(5)):
+            return 'memoryview'
+        else:
+            return 'string'
 
     def get_parameter_names(self):
         return list(self.parameters.keys())
@@ -159,11 +242,14 @@ class Parse:
 
 class Parameter:
 
-    def __init__(self, parameter_type = 'string', required = False, hidden = False):
+    def __init__(self, parameter_type = 'string', value = None, required = False, hidden = False):
         self.parameter_type = parameter_type
         self.required = required
         self.hidden = hidden
-        self.value = None
+        self.value = value
+        self.directory = None
+        self.absolute_path_to_file = None
+        self.relative_path_to_file = None
 
     # < --- Begin Setters --- >
     def set_value(self,value):
@@ -180,15 +266,30 @@ class Parameter:
     # < ---  End  Setters --- >
 
     # < --- Begin Getters --- >
-    def get_value(self,value):
+    def get_value(self):
         return self.value
 
-    def get_parameter_type(self,parameter_type):
+    def get_parameter_type(self):
         return self.parameter_type
 
-    def get_hidden(self,hidden):
+    def get_hidden(self):
         return self.hidden
 
-    def get_required(self,required):
+    def get_required(self):
         return self.required
     # < ---  End  Getters --- >
+
+    def show_parameter(self):
+        """
+
+        """
+        # For text coloration
+        text = ColoredText(['datatype'], ['38;5;30m'])
+
+        print("")
+        #print("Parameter:\t" + )
+        print("Datatype:\t" + text.cc(self.parameter_type,'datatype'))
+        print("Required:\t" + str(self.required))
+        print("Hidden:\t\t" + str(self.hidden))
+        print("Value:\t\t" + str(self.value))
+        print("")

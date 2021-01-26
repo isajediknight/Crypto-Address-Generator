@@ -167,7 +167,7 @@ class Parse:
         """
         What do we expect will be added as commandline parameters?
         """
-        self.expected_parameters[parameter_name] = Parameter(datatype, None, required, hidden)
+        self.expected_parameters[parameter_name] = Parameter(datatype, '', required, hidden)
 
     def validate_requirements(self):
         """
@@ -242,7 +242,7 @@ class Parse:
 
 class Parameter:
 
-    def __init__(self, parameter_type = 'string', value = None, required = False, hidden = False):
+    def __init__(self, parameter_type = 'string', value = '', required = False, hidden = False):
         self.parameter_type = parameter_type
         self.required = required
         self.hidden = hidden
@@ -250,6 +250,110 @@ class Parameter:
         self.directory = None
         self.absolute_path_to_file = None
         self.relative_path_to_file = None
+
+        # Initialize Checks
+        dir_check = False
+        relative_path = False
+
+        # See if it is a relative file path
+        file_check = os.path.isfile(value)
+
+        # See if it is an absolute file path
+        if (os.path.isfile(os.getcwd() + '/' + value)):
+            file_check = True
+            #relative_path = False
+        #elif (file_check):
+        #    relative_path = True
+
+        # Is it a relative or an absolute directory
+        if (os.path.isdir(os.getcwd() + '/' + value)):
+            dir_check = True
+        elif (os.path.isdir(value)):
+            dir_check = True
+
+        if os.path.isfile(value):
+            relative_path = True
+
+
+
+        # Human readable text output
+        if (file_check and not relative_path):
+            value_type = "Relative Path to File"
+            abs_to_file = os.getcwd() + '/' + value
+            path_to_dir = os.getcwd() + '/'
+            file = value
+        elif (file_check and relative_path):
+            value_type = "Abosulte Path to File"
+            abs_to_file = value
+            loc = value.find('/')
+            path_to_dir = value[:loc]
+            file = value[loc+1:]
+        elif (dir_check and not relative_path):
+            value_type = "Relative Path to Directory"
+            abs_to_file = value
+            path_to_dir = os.getcwd() + '/'
+            file = value
+        elif (dir_check and relative_path):
+            value_type = "Absolute Path to Directory"
+            abs_to_file = value
+            loc = value.find('/')
+            path_to_dir = value[:loc]
+            file = value[loc + 1:]
+        else:
+            value_type = "Neither"
+            abs_to_file = ''
+            path_to_dir = ''
+            path_to_dir = ''
+            file = ''
+
+        if file_check:
+            if relative_path:
+                value_type = "Relative Path to File"
+
+                if(value.find('..') > 0):
+                    dots = list(find_all(value,'..'))
+                    prev_value = value
+                    end_value = value[dots[-1]:]
+                    for up_level in dots:
+                        loc = list(find_all(prev_value,'/'))[-1]
+                        prev_value = prev_value[:loc-1]
+                    file = prev_value + '/' + end_value
+                else:
+                    file = value
+            else:
+                value_type = "Abosulte Path to File"
+                abs_to_file = value
+                loc = value.find('/')
+                path_to_dir = value[:loc]
+                file = value[loc + 1:]
+        elif dir_check:
+            value_type = "Absolute Path to Directory"
+            abs_to_file = ''
+            loc = value.find('/')
+            path_to_dir = value
+            file = ''
+
+        self.directory = None
+        self.absolute_path_to_file = None
+        self.relative_path_to_file = None
+        self.dir_check = dir_check
+        self.file_check = file_check
+        self.relative_path = relative_path
+
+        print("dir_check: " +str(dir_check))
+        print("file_check: " + str(file_check))
+        print("relative_path: " + str(relative_path))
+        print("value_type: " + value_type)
+        print("abs_to_file: " + abs_to_file)
+        print("path_to_dir: " + path_to_dir)
+        print("file: " + file)
+        print("-------------------")
+
+
+        #ans[this_parameter] = nt(this_parameter, parameter_dict[this_parameter], False, file_check, dir_check,
+        #                         relative_path, not relative_path, counter + 1, counter + 2,
+        #                         [(counter + 1, counter + 2)])
+        # <---  End  File / Dir analysis --->
 
     # < --- Begin Setters --- >
     def set_value(self,value):

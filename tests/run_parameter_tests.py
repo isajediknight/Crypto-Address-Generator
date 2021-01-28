@@ -226,9 +226,9 @@ class TestAPIClass(unittest.TestCase):
         check = "test = Parse('-')"
         test = Parse('-')
         test.add_expectation('-filename','string')
-        test.add_expectation('-user', 'string', True, False)
-        test.add_expectation('-password', 'string', True, True)
-        test.add_expectation('-token', 'integer', False, False)
+        #test.add_expectation('-user', 'string', True, False)
+        #test.add_expectation('-password', 'string', True, True)
+        #test.add_expectation('-token', 'integer', False, False)
         test.parse_commandline()
         test.validate_requirements()
         actual_comparison = test.get_class_validation()

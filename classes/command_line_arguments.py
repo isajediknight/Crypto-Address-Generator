@@ -259,11 +259,17 @@ class Parameter:
         file_check = os.path.isfile(value)
 
         # See if it is an absolute file path
-        if (os.path.isfile(os.getcwd() + '/' + value)):
-            file_check = True
-            #relative_path = False
-        #elif (file_check):
-        #    relative_path = True
+        if os.path.isfile(value):
+            if value.find('/') == 0:
+                self.absolute_path_to_file = True
+                self.value_type = "Abosulte Path to File"
+                file_check = os.path.isfile(value)
+            else:
+                self.value_type = "Relative Path to File"
+        else:
+            file_check = os.path.isfile(os.getcwd() + '/' + value))
+            self.directory = os.getcwd()
+
 
         # Is it a relative or an absolute directory
         if (os.path.isdir(os.getcwd() + '/' + value)):
@@ -333,22 +339,12 @@ class Parameter:
             path_to_dir = value
             file = ''
 
-        self.directory = None
-        self.absolute_path_to_file = None
-        self.relative_path_to_file = None
+        self.directory = path_to_dir
+        self.absolute_path_to_file = abs_to_file
+        self.relative_path_to_file = file
         self.dir_check = dir_check
         self.file_check = file_check
         self.relative_path = relative_path
-
-        print("dir_check: " +str(dir_check))
-        print("file_check: " + str(file_check))
-        print("relative_path: " + str(relative_path))
-        print("value_type: " + value_type)
-        print("abs_to_file: " + abs_to_file)
-        print("path_to_dir: " + path_to_dir)
-        print("file: " + file)
-        print("-------------------")
-
 
         #ans[this_parameter] = nt(this_parameter, parameter_dict[this_parameter], False, file_check, dir_check,
         #                         relative_path, not relative_path, counter + 1, counter + 2,
@@ -396,4 +392,12 @@ class Parameter:
         print("Required:\t" + str(self.required))
         print("Hidden:\t\t" + str(self.hidden))
         print("Value:\t\t" + str(self.value))
+        print("dir_check:\t" + str(self.dir_check))
+        print("file_check:\t" + str(self.file_check))
+        print("relative_path:\t" + str(self.relative_path))
+        #print("value_type: " + self.value_type)
+        print("abs_to_file:\t" + self.absolute_path_to_file)
+        print("path_to_dir:\t" + self.directory)
+        print("file:\t\t" + self.relative_path_to_file)
+        print("-------------------")
         print("")

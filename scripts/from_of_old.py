@@ -1,6 +1,9 @@
 # Default Modules
 import datetime,time,os,sys
 
+from os import listdir
+from os.path import isfile, join
+
 if(sys.platform.lower().startswith('linux')):
     OS_TYPE = 'linux'
 elif(sys.platform.lower().startswith('mac')):
@@ -52,7 +55,7 @@ elif((OS_TYPE == 'linux') or (OS_TYPE == 'macintosh')):
     CLASSES_DIR = OUTPUT_FILE_DIRECTORY[:directories[-1]] + '/classes/'
 
 # OS Compatibility for importing Class Files
-if((OS_TYPE == 'linux')):
+if((OS_TYPE == 'linux') or (OS_TYPE == 'macintosh')):
     sys.path.insert(0,'../classes/')
     sys.path.insert(0,MODULES_DIR)
 elif((OS_TYPE == 'windows')):
@@ -70,16 +73,16 @@ from benchmark import *
 # < ---  End  Custom Classes Import --- >
 
 # < --- Begin pypi.org Module Import -- >
-from bitcoinaddress import Wallet
+from bitcoinaddress_mainnet import Wallet
+#from bitcoinaddress import Wallet
 
-# < ---  End  pypi.org Module Import -- >
-
-
-runtime = Benchmark()
+generated_addresses_1 = {}
+generated_addresses_3 = {}
+generated_addresses_other = {}
+#for generated_address_counter in range(1,2):
 wallet = Wallet()
-print(wallet)
-#print(wallet.key.__dict__['mainnet'].__dict__)
-runtime.stop()
-#print("Program Runtime: "+runtime.seconds_to_human_readable(runtime.get_seconds()))
-print("Program Runtime: " +runtime.human_readable_string())
+private_key, public_address_1, public_address_3 = wallet._get_the_three()
+generated_addresses_1[public_address_1] = private_key
+generated_addresses_3[public_address_3] = private_key
 
+print(public_address_1+"\t"+public_address_3+"\t"+private_key)
